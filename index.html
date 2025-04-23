@@ -108,11 +108,11 @@
       { q: "6. Which of the following agents is responsible for turning the Taj Mahal yellow?", options: ['Sulphur', 'Chlorine', 'Sulphur dioxide', 'Nitrogen dioxide'], answer: 2 },
       { q: "7. DDT and Aluminium cans are examples of", options: ['Primary Pollutants', 'Secondary pollutants', 'Biodegradable Pollutants', 'Non-Biodegradable Pollutants'], answer: 3 },
       { q: "8. Which of the following agents is mainly responsible for the secondary pollutants?", options: ['Smog and Ozone', 'Sulphur trioxide', 'Nitrogen dioxide', 'All of the above'], answer: 3 },
-      { q: "9. Increased levels of air pollution results in", options: ['Soil erosion', 'Global warming', 'Respiratory problems', 'All of the above'], answer: 3 },
+      { q: "9. Increased levels of air pollution results in", options: ['Architecture destruction', 'Global warming', 'Respiratory problems', 'All of the above'], answer: 3 },
       { q: "10. Which of the following gases are called Greenhouse gases?", options: ['Methane', 'Nitrogen', 'Carbon monoxide', 'Both a and c'], answer: 3 },
       { q: "11. DDT is", options: ['a pesticide', 'chemical fertilizer', 'water purifier', 'plant hormone'], answer: 0 },
       { q: "12. In which state 'Silent valley movement' was organised?", options: ['Kerala', 'Madhya Pradesh', 'Uttar Pradesh', 'West Bengal'], answer: 0 },
-      { q: "13. Biological decay, forest fires and volcanic eruptions are example of", options: ['gaseous pollutants', 'water pollutants', 'human-caused pollution', 'all of the above'], answer: 3 },
+      { q: "13. Biological decay, forest fires and volcanic eruptions are example of", options: ['gaseous pollutants', 'water pollutants', 'human-caused pollution', 'all of the above'], answer: 0 },
       { q: "14. The Greenhouse gases of the troposphere are", options: ['carbon dioxide and Methane', 'sulphur dioxide and methane', 'carbon monoxide and sulfur dioxide', 'ozone and CFC'], answer: 0 },
       { q: "15. Farming management including preserving pest predators, using pest resistant seeds and reducing chemical fertilizer usage is called", options: ['pest management', 'economic control of pests', 'sustainable farming', 'Integrated pest management'], answer: 3 },
       { q: "16. Black foot disease is related with", options: ['Lead', 'Arsenic', 'Sulphur dioxide', 'Mercury'], answer: 1 },
@@ -142,13 +142,13 @@
       { q: "40. Sound is measured in", options: ['Hertz', 'Decibel', 'ppm', 'None of these'], answer: 1 },
       { q: "41. Which air pollution control device has maximum efficiency?", options: ['Electrostatic precipitator', 'Dynamic precipitator', 'Spray tower', 'Wet cyclonic scrubber'], answer: 0 },
       { q: "42. Galápagos finches are a good example of", options: ['Extinction', 'Heterochromia', 'Island gigantism', 'Adaptive radiation'], answer: 3 },
-      { q: "43. What is Species richness?", options: ['Coevolution', 'Commensalism', 'Species richness', 'Population density'], answer: 2 },
+      { q: "43. What does species richness refer to?", options: ['The number of different species in an area', 'The interaction between two species evolving together', 'The number of individuals of a single species', 'The relationship where one species benefits and the other is unaffected'], answer: 0 },
       { q: "44. Which one is the non-timber forest product?", options: ['Soil', 'Honey', 'Wood', 'Animal meat'], answer: 1 },
       { q: "45. Which is a biodiversity hotspot in India?", options: ['Himalayas', 'Western Ghats', 'Ganges', 'None of these'], answer: 1 },
       { q: "46. Coronavirus got its name from", options: ['Crown-like projections', 'Leaf-like projections', 'Brick-like shape', 'None of the above'], answer: 0 },
       { q: "47. Which state started Joint Forest Management in Medinipur?", options: ['Digha', 'Arabari', 'Tamluk', 'Salboni'], answer: 1 },
       { q: "48. Which of these can't be recycled?", options: ['Metal', 'Wood', 'Plastic', 'All of them'], answer: 3 },
-      { q: "49. What causes water crisis?", options: ['Famine', 'Drought', 'Water crisis', 'Water scarcity'], answer: 3 },
+      { q: "49. What is a major cause of the water crisis?", options: ['Famine', 'Drought', 'Water pollution', 'Over-extraction of groundwater'], answer: 1 },
       { q: "50. Primary source of Radon is", options: ['Electronics', 'Refrigerator', 'Indoor fire', 'Rocks and soil'], answer: 3 },
       { q: "51. UV radiation is higher in summer because", options: ['Sun is closer to earth', 'More ozone present', 'Sun is busy', 'None'], answer: 0 },
       { q: "52. CFC used in refrigerators is called", options: ['Carbon dioxide', 'Methane', 'Ammonia', 'Freon'], answer: 3 },
@@ -193,80 +193,91 @@
     ];
 
     let currentQuestion = 0;
-    let score = 0;
-    const questionContainer = document.getElementById('question-container');
-    const submitBtn = document.getElementById('submit-btn');
-    const nextBtn = document.getElementById('next-btn');
-    const resultDiv = document.getElementById('result');
-    const progressDiv = document.getElementById('progress');
-    const finalResultDiv = document.getElementById('final-result');
+let score = 0;
+let answered = false;
+const questionContainer = document.getElementById('question-container');
+const submitBtn = document.getElementById('submit-btn');
+const resultDiv = document.getElementById('result');
+const progressDiv = document.getElementById('progress');
+const finalResultDiv = document.getElementById('final-result');
 
-    // Initialize the quiz
+// Initialize the quiz
+displayQuestion();
+
+function displayQuestion() {
+  const question = quizData[currentQuestion];
+  answered = false;
+  
+  let questionHTML = `<div class="question"><p>${question.q}</p><div class="options">`;
+  
+  question.options.forEach((option, index) => {
+    questionHTML += `
+      <label>
+        <input type="radio" name="answer" value="${index}"> 
+        (${String.fromCharCode(97 + index)}) ${option}
+      </label>
+    `;
+  });
+  
+  questionHTML += '</div></div>';
+  questionContainer.innerHTML = questionHTML;
+  
+  // Update progress
+  progressDiv.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
+  
+  // Hide result div, show submit button
+  resultDiv.classList.add('hidden');
+  submitBtn.textContent = "Submit Answer";
+}
+
+function checkAnswer() {
+  if (answered) {
+    moveToNextQuestion();
+    return;
+  }
+
+  const selectedOption = document.querySelector('input[name="answer"]:checked');
+  
+  if (!selectedOption) {
+    alert('Please select an answer!');
+    return;
+  }
+  
+  const answer = parseInt(selectedOption.value);
+  const correctAnswer = quizData[currentQuestion].answer;
+  
+  if (answer === correctAnswer) {
+    score++;
+    resultDiv.innerHTML = `<p>Correct!</p>`;
+    resultDiv.className = 'result correct';
+  } else {
+    resultDiv.innerHTML = `<p>Incorrect!</p><p class="correct-answer">Correct answer: (${String.fromCharCode(97 + correctAnswer)}) ${quizData[currentQuestion].options[correctAnswer]}</p>`;
+    resultDiv.className = 'result incorrect';
+  }
+  
+  resultDiv.classList.remove('hidden');
+  submitBtn.textContent = "Next Question";
+  answered = true;
+}
+
+function moveToNextQuestion() {
+  currentQuestion++;
+  if (currentQuestion < quizData.length) {
     displayQuestion();
+  } else {
+    finalResultDiv.innerHTML = `Quiz completed! Your score: ${score}/${quizData.length}`;
+    finalResultDiv.classList.remove('hidden');
+    questionContainer.classList.add('hidden');
+    submitBtn.classList.add('hidden');
+  }
+}
 
-    function displayQuestion() {
-      const question = quizData[currentQuestion];
-      
-      let questionHTML = `<div class="question"><p>${question.q}</p><div class="options">`;
-      
-      question.options.forEach((option, index) => {
-        questionHTML += `
-          <label>
-            <input type="radio" name="answer" value="${index}"> 
-            (${String.fromCharCode(97 + index)}) ${option}
-          </label>
-        `;
-      });
-      
-      questionHTML += '</div></div>';
-      questionContainer.innerHTML = questionHTML;
-      
-      // Update progress
-      progressDiv.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
-      
-      // Hide result div and next button, show submit button
-      resultDiv.classList.add('hidden');
-      nextBtn.classList.add('hidden');
-      submitBtn.classList.remove('hidden');
-    }
-
-    function checkAnswer() {
-      const selectedOption = document.querySelector('input[name="answer"]:checked');
-      
-      if (!selectedOption) {
-        alert('Please select an answer!');
-        return;
-      }
-      
-      const answer = parseInt(selectedOption.value);
-      const correctAnswer = quizData[currentQuestion].answer;
-      
-      if (answer === correctAnswer) {
-        score++;
-        resultDiv.innerHTML = `<p>Correct!</p>`;
-        resultDiv.className = 'result correct';
-      } else {
-        resultDiv.innerHTML = `<p>Incorrect!</p><p class="correct-answer">Correct answer: (${String.fromCharCode(97 + correctAnswer)}) ${quizData[currentQuestion].options[correctAnswer]}</p>`;
-        resultDiv.className = 'result incorrect';
-      }
-      
-      resultDiv.classList.remove('hidden');
-      submitBtn.classList.add('hidden');
-      
-      if (currentQuestion < quizData.length - 1) {
-        nextBtn.classList.remove('hidden');
-      } else {
-        finalResultDiv.innerHTML = `Quiz completed! Your score: ${score}/${quizData.length}`;
-        finalResultDiv.classList.remove('hidden');
-      }
-    }
-
-    function nextQuestion() {
-      currentQuestion++;
-      if (currentQuestion < quizData.length) {
-        displayQuestion();
-      }
-    }
+// Add global keyboard event listener for Enter key
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Enter') {
+    checkAnswer();
+  }
+});
   </script>
 </body>
 </html>
