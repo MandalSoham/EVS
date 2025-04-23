@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EVS MCQ Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      padding: 20px;
+      color: #333;
+    }
+    .quiz-container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    .question {
+      margin: 20px 0;
+    }
+    .options label {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .options label:hover {
+      background-color: #f8f9fa;
+    }
+    button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0069d9;
+    }
+    .result {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 5px;
+    }
+    .correct {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .incorrect {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .progress {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+    .correct-answer {
+      font-weight: bold;
+      color: #155724;
+    }
+    .final-result {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h2>EVS Quiz</h2>
+    <div class="progress" id="progress">Question 1 of 90</div>
+    <div id="question-container"></div>
+    <button id="submit-btn" onclick="checkAnswer()">Submit Answer</button>
+    <button id="next-btn" onclick="nextQuestion()" class="hidden">Next Question</button>
+    <div class="result hidden" id="result"></div>
+    <div class="final-result hidden" id="final-result"></div>
+  </div>
+
+  <script>
+    const quizData = [
+      { q: "1. The natural place of an organism or community is known as", options: ['Niche', 'Biome', 'Habitat', 'Habit'], answer: 2 },
+      { q: "2. Which is the renewable exhaustible natural energy resource?", options: ['Coal', 'Petroleum', 'Kerosene', 'Biomass'], answer: 3 },
+      { q: "3. What type of food chain is: dead animals → blowfly maggot → frog → snake?", options: ['Detrital food chain', 'Decomposer food chain', 'Predator food chain', 'Grazing food chain'], answer: 0 },
+      { q: "4. Which of the following pollutants are responsible for the cause of SMOG?", options: ['From incinerators', 'Emissions from vehicles', 'Both incinerators and emissions from vehicles', 'None of the above'], answer: 2 },
+      { q: "5. Which of the following particles is called the particulate pollutants?", options: ['Ozone', 'Radon', 'Fly Ash', 'Ethylene'], answer: 2 },
+      { q: "6. Which of the following agents is responsible for turning the Taj Mahal yellow?", options: ['Sulphur', 'Chlorine', 'Sulphur dioxide', 'Nitrogen dioxide'], answer: 2 },
+      { q: "7. DDT and Aluminium cans are examples of", options: ['Primary Pollutants', 'Secondary pollutants', 'Biodegradable Pollutants', 'Non-Biodegradable Pollutants'], answer: 3 },
+      { q: "8. Which of the following agents is mainly responsible for the secondary pollutants?", options: ['Smog and Ozone', 'Sulphur trioxide', 'Nitrogen dioxide', 'All of the above'], answer: 3 },
+      { q: "9. Increased levels of air pollution results in", options: ['Soil erosion', 'Global warming', 'Respiratory problems', 'All of the above'], answer: 3 },
+      { q: "10. Which of the following gases are called Greenhouse gases?", options: ['Methane', 'Nitrogen', 'Carbon monoxide', 'Both a and c'], answer: 3 },
+      { q: "11. DDT is", options: ['a pesticide', 'chemical fertilizer', 'water purifier', 'plant hormone'], answer: 0 },
+      { q: "12. In which state 'Silent valley movement' was organised?", options: ['Kerala', 'Madhya Pradesh', 'Uttar Pradesh', 'West Bengal'], answer: 0 },
+      { q: "13. Biological decay, forest fires and volcanic eruptions are example of", options: ['gaseous pollutants', 'water pollutants', 'human-caused pollution', 'all of the above'], answer: 3 },
+      { q: "14. The Greenhouse gases of the troposphere are", options: ['carbon dioxide and Methane', 'sulphur dioxide and methane', 'carbon monoxide and sulfur dioxide', 'ozone and CFC'], answer: 0 },
+      { q: "15. Farming management including preserving pest predators, using pest resistant seeds and reducing chemical fertilizer usage is called", options: ['pest management', 'economic control of pests', 'sustainable farming', 'Integrated pest management'], answer: 3 },
+      { q: "16. Black foot disease is related with", options: ['Lead', 'Arsenic', 'Sulphur dioxide', 'Mercury'], answer: 1 },
+      { q: "17. The major component oxidizing smog is", options: ['Sulfur dioxide', 'Oxides of nitrogen', 'SPM', 'All of them'], answer: 3 },
+      { q: "18. Environment day is celebrated on", options: ['5th June', '22nd April', '23rd September', '1st May'], answer: 0 },
+      { q: "19. Bhopal gas tragedy occurred due to leakage of", options: ['SO2', 'MIC', 'DDT', 'Dioxin'], answer: 1 },
+      { q: "20. Incineration is related with", options: ['Solid waste management', 'Exhaust of automobile', 'Water pollution', 'Noise pollution'], answer: 0 },
+      { q: "21. Profuse growth of aquatic vegetation that often changes the colour of water body is known as", options: ['Algal bloom', 'Eutrophication', 'Fermentation', 'Both a and b'], answer: 3 },
+      { q: "22. Which one of the following is an example of ex-situ conservation?", options: ['Biosphere reserve', 'Sanctuary', 'Gene bank', 'All of these'], answer: 2 },
+      { q: "23. Biomining in municipality is related to", options: ['Solid waste management', 'Exhaust of automobile', 'Water pollution', 'Noise pollution'], answer: 0 },
+      { q: "24. Earth Summit was held in", options: ['1972 at Stockholm', '1992 at Rio de Janeiro', '1972 at Paris', '1992 at New York'], answer: 1 },
+      { q: "25. Examples of VOC causing cancer are", options: ['Benzene and formaldehyde', 'Iron and cadmium', 'Pesticides and weed sides', 'None of them'], answer: 0 },
+      { q: "26. Acid rain will attack buildings made from", options: ['Wood', 'Granite', 'Bamboo', 'Marble'], answer: 3 },
+      { q: "27. Fugitive emissions consist of", options: ['Street dust', 'Dust from construction activities', 'Dust from farm cultivation', 'All of the above'], answer: 3 },
+      { q: "28. Red data book contains information for", options: ['All plant species', 'All animal species', 'Threatened species', 'All economically important plant species'], answer: 2 },
+      { q: "29. The maximum biological damage is produced by", options: ['X-ray', 'Gamma ray', 'Beta ray', 'Alpha ray'], answer: 3 },
+      { q: "30. Carbon monoxide can cause people to become drowsy and suffocate when it binds to", options: ['White blood cells', 'Hemoglobin', 'Alveolar receptor', 'None of them'], answer: 1 },
+      { q: "31. Tetra ethyl lead was coming out from", options: ['Hospital waste', 'Exhaust of automobile', 'Thermal power plants', 'Chloralkali plants'], answer: 1 },
+      { q: "32. Organisms take important role in recycling of nutrients for plant growth and breaking up dead materials", options: ['Rodent', 'Ants', 'Rodents and ants', 'Bacteria and fungi'], answer: 3 },
+      { q: "33. The first ozone hole was discovered in", options: ['1980s', '1950s', '1970s', '1990s'], answer: 0 },
+      { q: "34. Which of the following is a prime health risk due to ozone layer depletion?", options: ['Digestive damage', 'Liver cancer', 'Skin cancer', 'Neurological disorders'], answer: 2 },
+      { q: "35. Global warming can significantly be controlled by", options: ['Increasing solid waste', 'Reducing water wastage', 'Burning waste', 'Reducing fossil fuel consumption'], answer: 3 },
+      { q: "36. Radon gas is harmful to", options: ['Eyes', 'Lungs', 'Heart', 'Kidneys'], answer: 1 },
+      { q: "37. Minamata disease is related with", options: ['Lead', 'Arsenic', 'Sulphur dioxide', 'Mercury'], answer: 3 },
+      { q: "38. Which of the following can cause noise pollution?", options: ['Hypertension', 'Hearing loss', 'Sleep disturbances', 'All of the above'], answer: 3 },
+      { q: "39. The value derived from scientific research, bird-watching, and ecotourism is called", options: ['Direct', 'Productive Use', 'Non-consumptive Use', 'Option value'], answer: 2 },
+      { q: "40. Sound is measured in", options: ['Hertz', 'Decibel', 'ppm', 'None of these'], answer: 1 },
+      { q: "41. Which air pollution control device has maximum efficiency?", options: ['Electrostatic precipitator', 'Dynamic precipitator', 'Spray tower', 'Wet cyclonic scrubber'], answer: 0 },
+      { q: "42. Galápagos finches are a good example of", options: ['Extinction', 'Heterochromia', 'Island gigantism', 'Adaptive radiation'], answer: 3 },
+      { q: "43. What is Species richness?", options: ['Coevolution', 'Commensalism', 'Species richness', 'Population density'], answer: 2 },
+      { q: "44. Which one is the non-timber forest product?", options: ['Soil', 'Honey', 'Wood', 'Animal meat'], answer: 1 },
+      { q: "45. Which is a biodiversity hotspot in India?", options: ['Himalayas', 'Western Ghats', 'Ganges', 'None of these'], answer: 1 },
+      { q: "46. Coronavirus got its name from", options: ['Crown-like projections', 'Leaf-like projections', 'Brick-like shape', 'None of the above'], answer: 0 },
+      { q: "47. Which state started Joint Forest Management in Medinipur?", options: ['Digha', 'Arabari', 'Tamluk', 'Salboni'], answer: 1 },
+      { q: "48. Which of these can't be recycled?", options: ['Metal', 'Wood', 'Plastic', 'All of them'], answer: 3 },
+      { q: "49. What causes water crisis?", options: ['Famine', 'Drought', 'Water crisis', 'Water scarcity'], answer: 3 },
+      { q: "50. Primary source of Radon is", options: ['Electronics', 'Refrigerator', 'Indoor fire', 'Rocks and soil'], answer: 3 },
+      { q: "51. UV radiation is higher in summer because", options: ['Sun is closer to earth', 'More ozone present', 'Sun is busy', 'None'], answer: 0 },
+      { q: "52. CFC used in refrigerators is called", options: ['Carbon dioxide', 'Methane', 'Ammonia', 'Freon'], answer: 3 },
+      { q: "53. What is Integrated Pest Management?", options: ['Use of pests', 'Pesticide overuse', 'Sustainable method', 'Excessive spraying'], answer: 2 },
+      { q: "54. What is the condition when there's scarcity of water for farms and urban use?", options: ['Famine', 'Drought', 'Water crisis', 'Water scarcity'], answer: 3 },
+      { q: "55. Which is a non-point source of water pollution?", options: ['Sewage plant', 'Industrial pipe', 'Urban runoff', 'Treatment facility'], answer: 2 },
+      { q: "56. When did the first coronavirus case appear?", options: ['Beijing', 'Shanghai', 'Wuhan', 'Tianjin'], answer: 2 },
+      { q: "57. What value is biodiversity measured in ecosystems?", options: ['Genetic', 'Species', 'Cultural', 'Economic'], answer: 1 },
+      { q: "58. Lime is added to which type of soil?", options: ['Acidic', 'Salty', 'Dry', 'Alkaline'], answer: 0 },
+      { q: "59. Which of the following statements about Aspergillosis is correct?", options: ['Infection', 'Allergic reaction', 'Fungal growth', 'All of the above'], answer: 3 },
+      { q: "60. Which year was the Wildlife Protection Act enforced in India?", options: ['1972', '1974', '1977', '1981'], answer: 0 },
+      { q: "61. The condition when all individuals of a species die is called", options: ['Evolution', 'Extinction', 'Migration', 'Mutation'], answer: 1 },
+      { q: "62. Which of the following is a biodegradable pollutant?", options: ['DDT', 'Plastic', 'Food waste', 'Glass'], answer: 2 },
+      { q: "63. What is the full form of EIA?", options: ['Environmental Impact Agreement', 'Environmental Impact Assessment', 'Environmental International Agreement', 'Ecological Integrated Assessment'], answer: 1 },
+      { q: "64. Gases responsible for acid rain are", options: ['O2 and N2', 'SO2 and NOx', 'CO2 and CH4', 'CO and CO2'], answer: 1 },
+      { q: "65. The primary greenhouse gas emitted through human activities is", options: ['Methane', 'Carbon dioxide', 'Nitrous oxide', 'Ozone'], answer: 1 },
+      { q: "66. Which of the following is not a consequence of deforestation?", options: ['Soil erosion', 'Loss of biodiversity', 'Increase in rainfall', 'Climate change'], answer: 2 },
+      { q: "67. Which layer of the atmosphere contains the ozone layer?", options: ['Troposphere', 'Mesosphere', 'Stratosphere', 'Exosphere'], answer: 2 },
+      { q: "68. Which country hosted the first Earth Summit in 1992?", options: ['USA', 'Sweden', 'Brazil', 'France'], answer: 2 },
+      { q: "69. What is the main function of the ozone layer?", options: ['Trap greenhouse gases', 'Filter UV rays', 'Provide oxygen', 'Absorb infrared radiation'], answer: 1 },
+      { q: "70. Which gas is responsible for the depletion of the ozone layer?", options: ['CO2', 'CH4', 'CFCs', 'N2O'], answer: 2 },
+      { q: "71. Which of the following is not a greenhouse gas?", options: ['CO2', 'CH4', 'O2', 'N2O'], answer: 2 },
+      { q: "72. Which ecosystem has the highest biodiversity?", options: ['Desert', 'Tundra', 'Tropical rainforest', 'Grassland'], answer: 2 },
+      { q: "73. Which of the following is a major cause of global warming?", options: ['Volcanic eruption', 'Deforestation', 'Solar radiation', 'Lunar eclipse'], answer: 1 },
+      { q: "74. What is the major source of indoor air pollution in rural India?", options: ['Tobacco smoke', 'Cooking using biomass fuels', 'Vehicle emission', 'Construction dust'], answer: 1 },
+      { q: "75. Which of the following is a renewable resource?", options: ['Petroleum', 'Natural gas', 'Wind', 'Coal'], answer: 2 },
+      { q: "76. Which one of the following is not a method of water conservation?", options: ['Rainwater harvesting', 'Drip irrigation', 'Over-irrigation', 'Contour ploughing'], answer: 2 },
+      { q: "77. Which type of pollution causes acid rain?", options: ['Soil pollution', 'Water pollution', 'Air pollution', 'Noise pollution'], answer: 2 },
+      { q: "78. Which of these is an abiotic component of an ecosystem?", options: ['Plants', 'Animals', 'Fungi', 'Sunlight'], answer: 3 },
+      { q: "79. Which is the most harmful UV radiation?", options: ['UVA', 'UVB', 'UVC', 'All equally'], answer: 2 },
+      { q: "80. Which of the following practices helps in soil conservation?", options: ['Deforestation', 'Overgrazing', 'Contour farming', 'Mining'], answer: 2 },
+      { q: "81. What is the main pollutant from automobile exhaust?", options: ['Sulfur dioxide', 'Nitrogen', 'Carbon monoxide', 'Oxygen'], answer: 2 },
+      { q: "82. Which of the following is the largest carbon sink in the world?", options: ['Forests', 'Soil', 'Oceans', 'Atmosphere'], answer: 2 },
+      { q: "83. Which organism is known as the 'indicator of pollution'?", options: ['Frog', 'Algae', 'Lichen', 'Fish'], answer: 2 },
+      { q: "84. Which is the most common cause of eutrophication?", options: ['Oil spill', 'Excess nutrients', 'Plastic waste', 'Heavy metals'], answer: 1 },
+      { q: "85. Which environmental movement was started to prevent deforestation in India?", options: ['Narmada Bachao', 'Chipko Movement', 'Silent Valley', 'Save Tiger'], answer: 1 },
+      { q: "86. Which gas is known as laughing gas?", options: ['Nitrogen', 'Nitrous oxide', 'Methane', 'Ammonia'], answer: 1 },
+      { q: "87. Which is a major source of noise pollution in cities?", options: ['Wind', 'Waterfalls', 'Traffic', 'Forest fires'], answer: 2 },
+      { q: "88. Which type of energy is produced by wind?", options: ['Chemical', 'Kinetic', 'Nuclear', 'Solar'], answer: 1 },
+      { q: "89. Which of the following is not related to environmental legislation in India?", options: ['Air Act', 'Water Act', 'Environment Protection Act', 'Right to Education Act'], answer: 3 },
+      { q: "90. The process of growing trees and shrubs to create a forest is called", options: ['Afforestation', 'Deforestation', 'Reforestation', 'Cultivation'], answer: 0 }  
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    const questionContainer = document.getElementById('question-container');
+    const submitBtn = document.getElementById('submit-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const resultDiv = document.getElementById('result');
+    const progressDiv = document.getElementById('progress');
+    const finalResultDiv = document.getElementById('final-result');
+
+    // Initialize the quiz
+    displayQuestion();
+
+    function displayQuestion() {
+      const question = quizData[currentQuestion];
+      
+      let questionHTML = `<div class="question"><p>${question.q}</p><div class="options">`;
+      
+      question.options.forEach((option, index) => {
+        questionHTML += `
+          <label>
+            <input type="radio" name="answer" value="${index}"> 
+            (${String.fromCharCode(97 + index)}) ${option}
+          </label>
+        `;
+      });
+      
+      questionHTML += '</div></div>';
+      questionContainer.innerHTML = questionHTML;
+      
+      // Update progress
+      progressDiv.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
+      
+      // Hide result div and next button, show submit button
+      resultDiv.classList.add('hidden');
+      nextBtn.classList.add('hidden');
+      submitBtn.classList.remove('hidden');
+    }
+
+    function checkAnswer() {
+      const selectedOption = document.querySelector('input[name="answer"]:checked');
+      
+      if (!selectedOption) {
+        alert('Please select an answer!');
+        return;
+      }
+      
+      const answer = parseInt(selectedOption.value);
+      const correctAnswer = quizData[currentQuestion].answer;
+      
+      if (answer === correctAnswer) {
+        score++;
+        resultDiv.innerHTML = `<p>Correct!</p>`;
+        resultDiv.className = 'result correct';
+      } else {
+        resultDiv.innerHTML = `<p>Incorrect!</p><p class="correct-answer">Correct answer: (${String.fromCharCode(97 + correctAnswer)}) ${quizData[currentQuestion].options[correctAnswer]}</p>`;
+        resultDiv.className = 'result incorrect';
+      }
+      
+      resultDiv.classList.remove('hidden');
+      submitBtn.classList.add('hidden');
+      
+      if (currentQuestion < quizData.length - 1) {
+        nextBtn.classList.remove('hidden');
+      } else {
+        finalResultDiv.innerHTML = `Quiz completed! Your score: ${score}/${quizData.length}`;
+        finalResultDiv.classList.remove('hidden');
+      }
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        displayQuestion();
+      }
+    }
+  </script>
+</body>
+</html>
